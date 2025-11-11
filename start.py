@@ -12,7 +12,7 @@ import xml.etree.ElementTree as ET
 from datetime import datetime
 
 import lastpy
-from ytmusicapi import YTMusic, OAuthCredentials
+from ytmusicapi import YTMusic
 from dotenv import load_dotenv, set_key
 
 load_dotenv()
@@ -403,14 +403,8 @@ class Scrobbler:
         try:
             # Initialize YouTube Music client
             self.log("Initializing YouTube Music client...")
-            # Pass both oauth.json file and credentials from environment
-            ytmusic = YTMusic(
-                'oauth.json',
-                oauth_credentials=OAuthCredentials(
-                    client_id=os.environ["GOOGLE_CLIENT_ID"],
-                    client_secret=os.environ["GOOGLE_CLIENT_SECRET"]
-                )
-            )
+            # oauth.json contains client_id and client_secret, so just pass the file
+            ytmusic = YTMusic('oauth.json')
 
             # Get Last.fm session if needed
             if not self.session:
