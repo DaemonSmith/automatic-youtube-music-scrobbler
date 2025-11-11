@@ -1,0 +1,10 @@
+[project]
+name = "youtube-music-scrobbler"
+version = "0.1.0"
+description = "a python script to scrobble your YouTube Music history to Last.fm"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "python-dotenv>=1.0.1",
+    "ytmusicapi>=1.10.1",
+]

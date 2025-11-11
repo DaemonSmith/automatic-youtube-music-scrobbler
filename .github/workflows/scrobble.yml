@@ -1,0 +1,59 @@
+name: Daily YTMusic Scrobbling
+
+on:
+  #schedule:
+   # - cron: '50 11,23 * * *'
+  workflow_dispatch:
+
+jobs:
+  scrobble:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install uv
+          uv pip install --system ytmusicapi lastpy python-dotenv
+
+      - name: Restore cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            data.db
+            oauth.json
+          key: ${{ runner.os }}-ytmusic-data
+
+      - name: Create .env file
+        run: |
+          echo "LAST_FM_API=${{ secrets.LAST_FM_API }}" > .env
+          echo "LAST_FM_API_SECRET=${{ secrets.LAST_FM_API_SECRET }}" >> .env
+          echo "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" >> .env
+          echo "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" >> .env
+          echo "LASTFM_SESSION=${{ secrets.LASTFM_SESSION }}" >> .env
+          echo "LAST_FM_USERNAME=${{ secrets.LAST_FM_USERNAME }}" >> .env
+
+      - name: Create oauth.json if not exists
+        run: |
+          if [ ! -f oauth.json ]; then
+            echo '${{ secrets.OAUTH_JSON }}' > oauth.json
+          fi
+
+      - name: Run scrobbler
+        run: python start.py
+
+      - name: Save cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            data.db
+            oauth.json
+          key: ${{ runner.os }}-ytmusic-data
