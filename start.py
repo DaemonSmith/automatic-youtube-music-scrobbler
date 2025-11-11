@@ -403,8 +403,7 @@ class Scrobbler:
         try:
             # Initialize YouTube Music client
             self.log("Initializing YouTube Music client...")
-            # oauth.json contains client_id and client_secret, so just pass the file
-            ytmusic = YTMusic('oauth.json')
+            ytmusic = YTMusic('browser.json')
 
             # Get Last.fm session if needed
             if not self.session:
